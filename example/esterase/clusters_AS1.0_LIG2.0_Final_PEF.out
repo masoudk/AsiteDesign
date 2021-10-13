@@ -1,0 +1,62 @@
+Cluster 0: 
+   Rank:   30    Full Atom Energy:    -3123.8    Constraints Energy:     -574.8    Ligands Energy:        2.5    SASA Energy:        0.3
+   Rank:   28    Full Atom Energy:    -3125.1    Constraints Energy:     -532.9    Ligands Energy:        3.4    SASA Energy:        0.4
+   Rank:   34    Full Atom Energy:    -3122.8    Constraints Energy:     -528.4    Ligands Energy:        5.6    SASA Energy:        0.3
+   Rank:   35    Full Atom Energy:    -3122.2    Constraints Energy:     -568.6    Ligands Energy:        5.6    SASA Energy:        0.1
+   Rank:   24    Full Atom Energy:    -3127.6    Constraints Energy:     -528.7    Ligands Energy:        5.7    SASA Energy:        0.3
+   Rank:   44    Full Atom Energy:    -3117.8    Constraints Energy:     -547.1    Ligands Energy:        6.1    SASA Energy:        0.2
+   Rank:   23    Full Atom Energy:    -3127.7    Constraints Energy:     -547.3    Ligands Energy:        6.4    SASA Energy:        0.2
+   Rank:   19    Full Atom Energy:    -3129.4    Constraints Energy:     -565.8    Ligands Energy:        6.5    SASA Energy:        0.2
+   Rank:   41    Full Atom Energy:    -3118.7    Constraints Energy:     -503.0    Ligands Energy:        7.8    SASA Energy:        0.3
+Cluster 1: 
+   Rank:   14    Full Atom Energy:    -3134.9    Constraints Energy:     -552.9    Ligands Energy:        2.5    SASA Energy:        0.8
+   Rank:   27    Full Atom Energy:    -3126.6    Constraints Energy:     -593.9    Ligands Energy:        2.8    SASA Energy:        0.2
+   Rank:   38    Full Atom Energy:    -3121.1    Constraints Energy:     -574.1    Ligands Energy:        2.8    SASA Energy:        0.2
+   Rank:   22    Full Atom Energy:    -3127.9    Constraints Energy:     -572.4    Ligands Energy:        3.1    SASA Energy:        0.2
+   Rank:   37    Full Atom Energy:    -3121.2    Constraints Energy:     -569.6    Ligands Energy:        4.2    SASA Energy:        0.2
+Cluster 2: 
+   Rank:   42    Full Atom Energy:    -3118.3    Constraints Energy:     -534.7    Ligands Energy:        2.0    SASA Energy:        0.8
+   Rank:   45    Full Atom Energy:    -3116.5    Constraints Energy:     -570.0    Ligands Energy:        3.2    SASA Energy:        0.6
+   Rank:   40    Full Atom Energy:    -3119.3    Constraints Energy:     -553.7    Ligands Energy:        3.3    SASA Energy:        0.6
+Cluster 3: 
+   Rank:   10    Full Atom Energy:    -3138.2    Constraints Energy:     -554.2    Ligands Energy:        2.7    SASA Energy:        0.5
+   Rank:   26    Full Atom Energy:    -3127.0    Constraints Energy:     -552.8    Ligands Energy:        4.0    SASA Energy:        0.3
+Cluster 4: 
+   Rank:   29    Full Atom Energy:    -3123.9    Constraints Energy:     -535.7    Ligands Energy:        1.8    SASA Energy:        0.7
+   Rank:    1    Full Atom Energy:    -3149.4    Constraints Energy:     -555.2    Ligands Energy:        2.1    SASA Energy:        0.6
+   Rank:    3    Full Atom Energy:    -3146.9    Constraints Energy:     -594.8    Ligands Energy:        2.4    SASA Energy:        0.2
+   Rank:    9    Full Atom Energy:    -3138.5    Constraints Energy:     -573.8    Ligands Energy:        2.4    SASA Energy:        0.1
+   Rank:    4    Full Atom Energy:    -3146.0    Constraints Energy:     -554.5    Ligands Energy:        2.5    SASA Energy:        0.2
+   Rank:    8    Full Atom Energy:    -3138.6    Constraints Energy:     -614.5    Ligands Energy:        2.7    SASA Energy:        0.2
+   Rank:    2    Full Atom Energy:    -3147.4    Constraints Energy:     -573.1    Ligands Energy:        2.9    SASA Energy:        0.6
+   Rank:   13    Full Atom Energy:    -3137.8    Constraints Energy:     -593.5    Ligands Energy:        3.0    SASA Energy:        0.5
+   Rank:    7    Full Atom Energy:    -3139.8    Constraints Energy:     -549.3    Ligands Energy:        4.9    SASA Energy:        0.3
+Cluster 5: 
+   Rank:   49    Full Atom Energy:    -3113.7    Constraints Energy:     -534.1    Ligands Energy:        2.1    SASA Energy:        1.1
+   Rank:   39    Full Atom Energy:    -3121.1    Constraints Energy:     -549.6    Ligands Energy:        3.6    SASA Energy:        0.2
+   Rank:   12    Full Atom Energy:    -3137.9    Constraints Energy:     -546.5    Ligands Energy:        6.0    SASA Energy:        0.4
+   Rank:   16    Full Atom Energy:    -3132.0    Constraints Energy:     -525.9    Ligands Energy:        6.1    SASA Energy:        0.4
+   Rank:   36    Full Atom Energy:    -3121.3    Constraints Energy:     -505.8    Ligands Energy:        6.6    SASA Energy:        0.5
+Cluster 6: 
+   Rank:   32    Full Atom Energy:    -3123.4    Constraints Energy:     -561.0    Ligands Energy:        9.3    SASA Energy:        0.5
+Cluster 7: 
+   Rank:   20    Full Atom Energy:    -3128.8    Constraints Energy:     -573.2    Ligands Energy:        3.3    SASA Energy:        0.1
+   Rank:    6    Full Atom Energy:    -3144.1    Constraints Energy:     -552.6    Ligands Energy:        3.8    SASA Energy:        0.5
+   Rank:   43    Full Atom Energy:    -3118.1    Constraints Energy:     -591.1    Ligands Energy:        4.1    SASA Energy:        0.2
+   Rank:    5    Full Atom Energy:    -3144.2    Constraints Energy:     -566.9    Ligands Energy:        6.8    SASA Energy:        0.4
+   Rank:   11    Full Atom Energy:    -3138.1    Constraints Energy:     -586.0    Ligands Energy:        7.1    SASA Energy:        0.3
+Cluster 8: 
+   Rank:    0    Full Atom Energy:    -3152.1    Constraints Energy:     -575.0    Ligands Energy:        2.3    SASA Energy:        0.2
+   Rank:   48    Full Atom Energy:    -3114.3    Constraints Energy:     -595.2    Ligands Energy:        2.3    SASA Energy:        0.3
+   Rank:   47    Full Atom Energy:    -3115.7    Constraints Energy:     -574.8    Ligands Energy:        2.5    SASA Energy:        0.4
+   Rank:   46    Full Atom Energy:    -3116.3    Constraints Energy:     -534.4    Ligands Energy:        2.6    SASA Energy:        0.9
+   Rank:   21    Full Atom Energy:    -3128.8    Constraints Energy:     -572.1    Ligands Energy:        3.4    SASA Energy:        0.5
+   Rank:   31    Full Atom Energy:    -3123.8    Constraints Energy:     -591.7    Ligands Energy:        4.0    SASA Energy:        0.5
+   Rank:   17    Full Atom Energy:    -3130.4    Constraints Energy:     -570.8    Ligands Energy:        4.2    SASA Energy:        0.7
+Cluster 9: 
+   Rank:   33    Full Atom Energy:    -3122.8    Constraints Energy:     -558.1    Ligands Energy:       10.2    SASA Energy:        0.3
+Cluster 10: 
+   Rank:   25    Full Atom Energy:    -3127.5    Constraints Energy:     -553.5    Ligands Energy:        2.9    SASA Energy:        0.3
+   Rank:   15    Full Atom Energy:    -3133.2    Constraints Energy:     -532.9    Ligands Energy:        3.1    SASA Energy:        0.6
+Cluster 11: 
+   Rank:   18    Full Atom Energy:    -3129.9    Constraints Energy:     -513.4    Ligands Energy:        3.3    SASA Energy:        0.7

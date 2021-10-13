@@ -1,0 +1,146 @@
+PDB: 1VA4-wt-min.pdb
+
+ParameterFiles:
+  - VS1.fa.params
+
+Name: VS1_SCCoupling-005
+
+# Sampling Coupling Options
+ActiveSiteSampling: Coupled
+LigandSampling: Coupled
+DynamicSideChainCoupling: False
+SoftRepulsion: False
+
+
+# Active site design options
+ActiceSiteDesignMode: MIN
+MimimizeBackbone: True
+ActiveSiteLoops: 3
+nNoneCatalytic: 1
+#select (resid 27 and chain A)+(resid 28 and chain A)+(resid 29 and chain A)+(resid 30 and chain A)+(resid 34 and chain A)+(resid 57 and chain A)+(resid 69 and chain A)+(resid 93 and chain A)+(resid 94 and chain A)+(resid 95 and chain A)+(resid 96 and chain A)+(resid 97 and chain A)+(resid 119 and chain A)+(resid 120 and chain A)+(resid 121 and chain A)+(resid 125 and chain A)+(resid 135 and chain A)+(resid 139 and chain A)+(resid 140 and chain A)+(resid 143 and chain A)+(resid 147 and chain A)+(resid 154 and chain A)+(resid 155 and chain A)+(resid 158 and chain A)+(resid 162 and chain A)+(resid 183 and chain A)+(resid 191 and chain A)+(resid 194 and chain A)+(resid 195 and chain A)+(resid 198 and chain A)+(resid 199 and chain A)+(resid 222 and chain A)+(resid 224 and chain A)+(resid 225 and chain A)+(resid 230 and chain A)+(resid 251 and chain A)+(resid 252 and chain A)+(resid 1 and chain X)
+DesignResidues:
+  #26-A: H
+  #27-A: G
+  28-A:  A-I-L-F-W-V-P-Y
+  29-A:  A-I-L-F-W-V-P-Y
+  30-A:  A-I-L-F-W-V-P-Y
+  34-A:  M
+  #54-A: R
+  57-A:  F
+  69-A:  Y
+  93-A:  F
+  94-A:  S
+  95-A:  M
+  #96-A: G
+  #97-A: G
+  #119-A: G
+  120-A:  A
+  121-A:  A-I-L-F-W-V-P-Y
+  125-A:  A-I-L-F-W-V-P-Y
+  135-A:  V
+  139-A:  V
+  140-A:  F
+  143-A:  A-I-L-F-W-V-P-Y 
+  147-A:  L
+  154-A:  F
+  155-A:  I
+  158-A:  A-I-L-F-W-V-P-Y
+  #161-A: P
+  162-A:  A-I-L-F-W-V-P-Y
+  #179-A:  
+  183-A:  A
+  191-A:  T
+  #194-A:  C
+  195-A:  V
+  198-A:  A-I-L-F-W-V-P-Y
+  199-A:  A
+  222-A:  D
+  #223-A: 
+  224-A:  A-I-L-F-W-V-P-Y
+  225-A:  A-I-L-F-W-V-P-Y
+  #226-A: 
+  230-A:  T
+  251-A:  H
+  #252-A:  G
+
+CatalyticResidues:
+  94-A: ZZ      
+  251-A: ZZ         
+  222-A: ZZ
+
+Ligands:
+  - 1-X:
+      RigidBody: True
+      Packing: True
+      PerturbationMode: MC
+      PerturbationLoops: 1
+      nRandomTorsionPurturbation: 1
+      Energy: Reduced     # 'Reduced', 'Full'
+      #SimulationCenter: [40.110, 23.098, 39.138]
+      #DockingCenter: [40.110, 23.098, 39.138]
+      SimulationRadius: 5.0
+      SideChainCoupling: 0.005      #SC coupling
+      #SideChainCouplingMax: 0.001
+      TranslationSTD: 0.5
+      RotationSTD: 2.0
+      TranslationLoops: 20
+      RotationLoops: 50
+      ClashOverlap: 0.6
+      NeighbourCutoff: 15.0
+      SasaConstraint: 10       # positive values penalize high ligand SASA (E_sasa = sasa * SasaConstraint)
+      SasaScaling: True
+      SasaCutoff: 0.6
+      TranslationScale: -1  # 0.5
+      RotationScale: -1 # 0.5
+      PackingLoops: 1
+      NumberOfGridNeighborhoods: 2
+      MaxGrid: 8
+      MinGrid: 6
+      GridInterval: -4
+      SideChainsGridLimit:
+        #- [ 12, 6, 360.0 ]
+        #- [ 8, 6, -4 ]
+      ExcludedTorsions:
+        #- ['O7', 'C3', 'O1', 'C2']
+
+
+Constraints:
+  # SER-Ligand
+  cst0:
+    type: B
+    resi: 1-X
+    atomi: C1
+    resj: 94-A
+    atomj: OG
+    lb: 2.0
+    hb: 2.1
+    sd: 100.0
+
+  cst2:
+    type: S
+    weight: 20                      
+    reference: 1VA4-wt-min.pdb
+
+
+nIterations: 100         # Number of adaptive sampling to be performed, i.e. numer of spawning
+nPoses: 50               # number of final poses, should always be nPoses <= nproccesses - 1. for example
+nSteps: 25               # number of steps for each round of exploration
+Anneal: True             # Performs temperatur annealing. This is default behavior
+kT_high: 500             # kT at High Temperature
+kT_low: 1                # kT at low Temperature
+kT_decay: True           # Exponential temperatur decay
+kT_highScale: True       # Linear scaling of the kT_high over iterations. Default True.
+WriteALL: True
+#LigandClusterCutoff: 3.0
+
+#Anneal: False                      # Turns off annealing
+#kT: 1
+RankingMetric:  FullAtom     
+SpawningMethod: Adaptive                     
+SpawningMetric: Split                   
+SpawningMetricSteps:
+    # IterationRatio  method              # Defines a combined SpawningMetric
+  - 0.8 FullAtomWithConstraints           # Untile iteration (0.5 * nIterations) use FullAtomWithConstraints
+  - 1.0 FullAtom                          # untile iteration (1.0 * nIterations) use OnlyConstraints
+
+Time: 48           

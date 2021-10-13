@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name=Cop-PEF-XS1-M2
+#SBATCH --error=PEF%j.err
+#SBATCH --time=48:00:00
+#SBATCH --ntasks=240
+#SBATCH -D .
+##SBATCH --qos=debug
+
+module purge; module load ANACONDA/5.0.1
+export PATH=/gpfs/projects/bsc72/masoud/conda/envs/EDesignTools-MKL/bin/:/gpfs/projects/bsc72/masoud/EDesign_V4/:$PATH
+export PYTHONPATH=/gpfs/projects/bsc72/masoud/EDesign_V4
+
+mpirun -n 240 python -m ActiveSiteDesign input.yaml > PEF.out
+#mpirun -n 48 python -m ActiveSiteDesign input.yaml > PEF.out
