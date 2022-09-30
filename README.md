@@ -1,6 +1,6 @@
-# EDesign
+# AsiteDesign
 
-EDesign repository combines the [PyRosetta](http://www.pyrosetta.org/) modules with enhanced sampling thecqniques to design both the catalytic and non-ctalytic residues in  given active sites.
+AsiteDesign repository combines the [PyRosetta](http://www.pyrosetta.org/) modules with enhanced sampling thecqniques to design both the catalytic and non-ctalytic residues in  given active sites.
 
 ## Installation
 
