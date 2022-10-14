@@ -1,0 +1,117 @@
+PDB: Input_file.pdb # Input file
+
+ParameterFiles: # Put all the parameters of the ligands and cofactors here. Get the ligand and save it as mol2 file with Pymol then convert it with the parm.sh file.
+  - COF.fa.params
+  - LIG.fa.params
+
+Name: Insilico_directedevolution_job # Name of the job, which will be used for the output folders
+
+# Sampling Coupling Options, leave unchanged
+ActiveSiteSampling: Coupled
+LigandSampling: Coupled
+DynamicSideChainCoupling: False
+SoftRepulsion: False
+
+
+# Active site design options
+ActiceSiteDesignMode: MIN # The active site can be minimized to optimize ligand binding (MIN) or it can perturbed by Monte Carlo (MC)
+MimimizeBackbone: True # Boolean value to set whether the backbone of the protein is minimized or not
+ActiveSiteLoops: 3 # Number of iterations of the ActiveSiteDesignMode
+nNoneCatalytic: 1 # Number of residues that are mutated/optimized by overall iteration
+
+DesignResidues: # List of residues that want to be mutable during the simulation
+     28-A   : XX+
+     29-A   : XX+
+     30-A   : XX+
+     34-A   : XX+
+     57-A   : XX+
+     69-A   : XX+
+     93-A   : XX+
+     95-A   : XX+
+     120-A  : XX+
+     121-A  : XX+
+     125-A  : XX+
+     135-A  : XX+
+     139-A  : XX+
+     140-A  : XX+
+     143-A  : XX+
+     147-A  : XX+
+     154-A  : XX+
+     155-A  : XX+
+     158-A  : XX+
+     162-A  : XX+
+     183-A  : XX+
+     191-A  : XX+
+     195-A  : XX+
+     198-A  : XX+
+     199-A  : XX+
+     224-A  : XX+
+     225-A  : XX+
+     230-A  : XX+
+
+Ligands:
+  - 1-L: # The different parameters of the perturbable ligand, leave the majority unchanged
+      RigidBody: True
+      Packing: True
+      PerturbationMode: MC
+      PerturbationLoops: 1
+      nRandomTorsionPurturbation: 2
+      Energy: Reduced # 'Reduced', 'Full'
+      SimulationRadius: 5.0
+      SideChainCoupling: 0.005
+      TranslationSTD: 0.5 # Value in \AA applied to the translation of the ligand
+      RotationSTD: 2.0 # Value in degrees applied to the rotation of the ligand (the more enclosed, the smaller)
+      TranslationLoops: 20
+      RotationLoops: 50
+      ClashOverlap: 0.6
+      NeighbourCutoff: 15.0
+      SasaConstraint: 10       # positive values penalize high ligand SASA (E_sasa = sasa * SasaConstraint)
+      SasaScaling: True
+      SasaCutoff: 0.6
+      TranslationScale: -1  # 0.5
+      RotationScale: -1 # 0.5
+      PackingLoops: 1
+      NumberOfGridNeighborhoods: 2
+      MaxGrid: 4
+      MinGrid: 4
+      GridInterval: -4
+      ExcludedTorsions: # Torsions/dihedrals of the ligand to be excluded from the sampling. Useful for big ligands with a lot of torsions, and thus, degrees of freedom (such as PE oligomers)
+        - ['C11', 'C14', 'C16', 'C17']
+
+Constraints: # Both bond/distance and sequence constraints can be applied
+  cst0:
+    type: B
+    resi: 1-L
+    atomi: C1 
+    resj: 94-A 
+    atomj: OG
+    lb: 2.0 # Lower bound of the defined distance constraint
+    hb: 3.5 # Higher bound of the defined distance constraint
+    sd: 100.0 # standard deviation. Its related to the "K" force constant by sd = 1/sqrt(K)
+              # That is, a samll sd (0.1) corresponds to a strong force while a large sd (0.9)
+              # corresponds to a weak force
+    
+  cst1:
+    type: S
+    weight: 1 # Increase weight to be more conservative
+    reference: Input_file.pdb # PDB file to use as reference sequence
+
+nIterations: 100         # Number of adaptive sampling to be performed, i.e. numer of spawning
+nPoses: 100              # number of final poses, should always be nPoses <= nproccesses - 1
+nSteps: 25               # number of steps for each round of exploration
+Anneal: True             # Performs temperature annealing. This is default behavior
+kT_high: 500             # kT at High Temperature
+kT_low: 1                # kT at low Temperature
+kT_decay: True           # Exponential temperatur decay
+kT_highScale: True       # Linear scaling of the kT_high over iterations. Default True.
+WriteALL: True
+
+RankingMetric:  FullAtom     
+SpawningMethod: Adaptive                     
+SpawningMetric: Split                   
+SpawningMetricSteps:
+    # IterationRatio  method              # Defines a combined SpawningMetric
+  - 0.8 FullAtomWithConstraints           # Untile iteration (0.5 * nIterations) use FullAtomWithConstraints
+  - 1.0 FullAtom                          # untile iteration (1.0 * nIterations) use OnlyConstraints
+
+Time: 48 # Time in the queue
