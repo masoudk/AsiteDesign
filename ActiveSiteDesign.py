@@ -121,8 +121,10 @@ class ActiveSiteDesign(object):
         endDate = datetime.datetime.now()
 
         # write final summary
-        self.printFinalSummary(results=[result], nElements=1, startDate=startDate, endDate=endDate,
-                                                                                timeTotal=endTimeTotal-startTimeTotal)
+        self.printFinalSummary(results=[result], nElements=1)
+
+        # Write the final timming
+        self.printFinalTimming(startDate=startDate, endDate=endDate, timeTotal=endTimeTotal-startTimeTotal)
 
         # Clean stuff
         self.clean(inputs)
