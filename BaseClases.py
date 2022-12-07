@@ -805,7 +805,7 @@ class AminoAcids():
                                   'POLARB': 'RK'}
 
         # MAX SASA for normalization of SASA
-        self.MaxSASAAminoAcid3Dict = {'ALA': 129, 'PRO': 159, 'ASN': 195, 'HID': 224,
+        self.MaxSASAAminoAcid3Dict = {'ALA': 129, 'PRO': 159, 'ASN': 195, 'HIS': 224,
                                       'VAL': 174, 'TYR': 263, 'CYS': 167, 'LYS': 236,
                                       'ILE': 197, 'PHE': 240, 'GLN': 225, 'SER': 155,
                                       'LEU': 201, 'TRP': 285, 'GLU': 223, 'THR': 172,
