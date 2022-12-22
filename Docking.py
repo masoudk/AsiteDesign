@@ -57,9 +57,6 @@ from scipy.spatial.distance import pdist, cdist, squareform
 from biotite.structure.io.pdb import PDBFile
 from biotite.structure import sasa, annotate_sse, apply_residue_wise
 
-# MD Analysis imports
-from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-
 # BIO Python imports
 from Bio.PDB.Polypeptide import one_to_three
 

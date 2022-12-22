@@ -1,7 +1,6 @@
 PDB: Input_file.pdb # Input file
 
 ParameterFiles: # Put all the parameters of the ligands and cofactors here. Get the ligand and save it as mol2 file with Pymol then convert it with the parm.sh file.
-  - COF.fa.params
   - LIG.fa.params
 
 Name: DesignCatalyticSite_job # Name of the job, which will be used for the output folders
@@ -20,34 +19,34 @@ ActiveSiteLoops: 1 # Number of iterations of the ActiveSiteDesignMode
 nNoneCatalytic: 1 # Number of residues that are mutated/optimized by overall iteration
 
 DesignResidues: # List of residues that want to be mutable during the simulation
-     28-A   : XX+
-     29-A   : XX+
-     30-A   : XX+
-     34-A   : XX+
-     57-A   : XX+
-     69-A   : XX+
-     93-A   : XX+
-     95-A   : XX+
-     120-A  : XX+
-     121-A  : XX+
-     125-A  : XX+
-     135-A  : XX+
-     139-A  : XX+
-     140-A  : XX+
-     143-A  : XX+
-     147-A  : XX+
-     154-A  : XX+
-     155-A  : XX+
-     158-A  : XX+
-     162-A  : XX+
-     183-A  : XX+
-     191-A  : XX+
-     195-A  : XX+
-     198-A  : XX+
-     199-A  : XX+
-     224-A  : XX+
-     225-A  : XX+
-     230-A  : XX+
+     28-A   : ZX 
+     29-A   : ZX 
+     30-A   : ZX 
+     34-A   : ZX 
+     57-A   : ZX 
+     69-A   : ZX 
+     93-A   : ZX 
+     95-A   : ZX 
+     120-A  : ZX 
+     121-A  : ZX 
+     125-A  : ZX 
+     135-A  : ZX 
+     139-A  : ZX 
+     140-A  : ZX 
+     143-A  : ZX 
+     147-A  : ZX 
+     154-A  : ZX 
+     155-A  : ZX 
+     158-A  : ZX 
+     162-A  : ZX 
+     183-A  : ZX 
+     191-A  : ZX 
+     195-A  : ZX 
+     198-A  : ZX 
+     199-A  : ZX 
+     224-A  : ZX 
+     225-A  : ZX 
+     230-A  : ZX 
 
 #The CatalyticResidues, Defines the Catalytic domain to be designed. Each residue 
 # is defimed as "Name: TargetAminoAcid(s)". In this example input file, it would
@@ -97,7 +96,7 @@ Constraints: # Both bond/distance and sequence constraints can be applied. Its k
     lb: 3.0 # Lower bound of the defined distance constraint
     hb: 4.0 # Higher bound of the defined distance constraint
     sd: 100.0 # standard deviation. Its related to the "K" force constant by sd = 1/sqrt(K)
-	      # That is, a samll sd (0.1) corresponds to a strong force while a large sd (0.9)
+              # That is, a samll sd (0.1) corresponds to a strong force while a large sd (0.9)
               # corresponds to a weak force
 
   # SER-HIS
