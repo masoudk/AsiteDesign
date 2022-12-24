@@ -12,7 +12,7 @@ A set of Python libraries are necessary to run the scripts of this Git repositor
 ## Requirements
 
 * Python Python 3.7 or higher must be installed.
-* PyRosetta (licensed software), Biotite, MDAnalysis, MPI4py, OpenMM.
+* PyRosetta (licensed software), Biotite, MPI4py, OpenMM.
 
 ## Usage
 

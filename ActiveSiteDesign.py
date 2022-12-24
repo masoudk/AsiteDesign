@@ -2,7 +2,6 @@
 import os, sys
 import re
 import traceback
-# import copy
 import time
 import datetime
 import shutil
@@ -36,15 +35,6 @@ from MoversRosetta import getScoreFunction
 from MoversRosetta import DesignPose, ActiveSiteMover, ActiveSiteSampler
 from Docking import LigandRigidBodyMover, LigandPackingMover, LigandNeighborsPackingMover, LigandMover
 
-# MD Analysis imports
-from MDAnalysis import Universe, Writer, AtomGroup
-from MDAnalysis.coordinates.PDB import PDBReader
-from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.analysis import align
-
-# from MoversRosetta import CatalyticMoverByResfile, CatalyticSampler
-# from MoversRosetta import NoneCatalyticMoverByResfile, NoneCatalyticSampler
-
 # PyRosetta import
 import pyrosetta as pr
 from pyrosetta.rosetta.std import ostringstream, istringstream
@@ -76,12 +66,6 @@ class ActiveSiteDesign(object):
         self.energyFullAtomWithConstraints.set_weight(score_type_from_name('fa_dun'), 0.1)
         #self.energyFullAtomWithConstraints.set_weight(score_type_from_name('rama_prepro'), 0.0)
         self.energyOnlyConstraints = getScoreFunction('onlyConstraints')
-
-        # Only used in explorers
-        # self.result = Result()
-
-        # Only used in master process
-        #self.bestResults = list()
 
     def run(self, confFile):
         if self.nProccess == 1:
@@ -281,56 +265,13 @@ class ActiveSiteDesign(object):
             endDate = datetime.datetime.now()
             self.printFinalSummary(results=bestResults, nElements=inputs.nPoses)
 
-            # Write the clusters
-            #self.printFinalClusters(bestResults, inputs)
-
-            # Write the final timming
+            # Write the final timing
             self.printFinalTimming(startDate=startDate, endDate=endDate, timeTotal=endTimeTotal-startTimeTotal)
 
             # Clean up stuff
             self.clean(inputs)
 
             return bestResults
-
-    def printFinalClusters(self, results, inputs):
-
-        # initiate clusters
-        clusters = [[(0, results[0])]]
-        for i, result in enumerate(results):
-            if i > inputs.nPoses:
-                break
-            found = False
-            # skip itself
-            if i == 0: continue
-            # cluster is a list itself
-            for cluster in clusters:
-                rmsd = self.getRMSD(cluster[0][1].dPose.pose, result.dPose.pose, inputs)
-                # if it is below threshold add it to the current
-                if rmsd <= inputs.ligandClusterCutoff:
-                    cluster.append((i, result))
-                    found = True
-                    break
-            # if nothing found make new cluster
-            if not found:
-                clusters.append([(i, result)])
-
-        print('\n')
-        print('------------------------------------------------------------------------------------------------------')
-        print('                                           FINAL RESULTS CLUSTERS                                     ')
-        print('------------------------------------------------------------------------------------------------------')
-        lineFormat = '#{:4d}       {:8.1f}         {:8.1f}              {:8.1f}                {:8.1f}                {:8.1f}     {:8.1f} {:8.1f}    {:8.1f}      {}'
-
-        for i, cluster in enumerate(clusters):
-            print('Cluster Number: ', i)
-            print('                                                                                                                     -----Acceptance Ratios-----           ')
-            print('  Rank     Total Energy    Full Atom Energy       Constraints Energy       Ligand(s) Energy         SASA Energy     Total  ActiveSite   Ligand(s)  Sequence')
-
-            for result in cluster:
-                rank, data = result
-                print(lineFormat.format(rank, data.scoreFullAtomWithConstraints, data.scoreFullAtom, data.scoreOnlyConstraints,
-                                        data.scoreLigand, data.scoreSASA, data.acceptanceRatio,
-                                        data.activeSiteAcceptedRatio, data.ligandAcceptedRatio, data.sequence))
-            print('\n')
 
     def getIterationResults(self, results, nElement, metric=None):
 
@@ -753,89 +694,6 @@ class ActiveSiteDesign(object):
             traceback.print_tb(e.__traceback__)
             print('\n')
             raise ValueError('Error reading input file, {}'.format(e))
-
-    """
-    def GetCentroidandRadius(self, pose, list_of_design_residues):
-
-        # Get the pdb file out of the pose
-        posePdb = ostringstream()
-        pose.dump_pdb(posePdb)
-        pdbFile = StringIO(posePdb.str())
-
-        # Get the PDB file
-        pdb = PDBFile.read(pdbFile)
-        pdbStruc = pdb.get_structure()[0]
-
-        # Get the coordinates of the DesignResidues and get the centroid. Convert the dictionary of DesignResidues to a list of the residues designed.
-        # The Radius list is to get the BoxRadius for the Docking Mover
-        list_of_design_residues = list(list_of_design_residues.keys())
-        coordinates, residue_coordinates, Radius = list(), dict(), list()
-        for atom in pdbStruc:
-            ResidueID = (str(atom.res_id) + "-" + atom.chain_id)
-            if ResidueID in list_of_design_residues:
-                if ResidueID not in residue_coordinates.keys():
-                    residue_coordinates[ResidueID] = []
-                residue_coordinates[ResidueID].append(atom.coord)
-                coordinates.append(atom.coord)
-
-        Centroid = list(mean(coordinates, axis=0))
-        for DesignedResidue in residue_coordinates:
-            Radius.append(norm(mean(residue_coordinates[DesignedResidue], axis=0) - Centroid))
-        Radius = max(Radius)
-
-        return Centroid, Radius
-    """
-
-    def getRMSD(self, pose1, pose2, inputs):
-
-        posePdb = ostringstream()
-        pose1.dump_pdb(posePdb)
-        struc1 = Universe(StringIO(posePdb.str()), format='PDB', in_memory=True, in_memory_step=1, verbose=False)
-
-        posePdb = ostringstream()
-        pose2.dump_pdb(posePdb)
-        struc2 = Universe(StringIO(posePdb.str()), format='PDB', in_memory=True, in_memory_step=1, verbose=False)
-
-        struc1.atoms.translate(-struc1.select_atoms('name CA').center_of_mass())
-        struc2.atoms.translate(-struc2.select_atoms('name CA').center_of_mass())
-
-        R, x = align.rotation_matrix(struc1.select_atoms('name CA').positions, struc2.select_atoms('name CA').positions)
-
-        struc1.atoms.rotate(R)
-
-        #struc1.atoms.write('struc1.pdb')
-        #struc2.atoms.write('struc2.pdb')
-
-        rmsd_total = 0
-
-        for ligand, ligandParm in zip(inputs.ligands, inputs.ligandsParm):
-
-            ID, chain = ligand.ID, ligand.chain
-            ligand_1 = struc1.select_atoms('resid {} and segid {}'.format(ID, chain)).positions
-            ligand_2 = struc2.select_atoms('resid {} and segid {}'.format(ID, chain)).positions
-
-            rmsd = ligand_1 - ligand_2
-            rmsd = square(rmsd)
-            rmsd = sum(rmsd)
-            rmsd = rmsd/ligand_1.shape[0]
-            rmsd = sqrt(rmsd)
-            rmsd_total += rmsd
-
-            """
-            poseIndex1 = pose1.pdb_info().pdb2pose(chain, ID)
-            poseIndex2 = pose2.pdb_info().pdb2pose(chain, ID)
-            natom = pose1.residue(poseIndex1).natoms()
-
-            rmsd = 0.0
-            count = 0
-            for i in range(1, natom + 1):
-                rmsd += (pose1.residue(poseIndex1).xyz(i).x - pose2.residue(poseIndex2).xyz(i).x) ** 2 + \
-                        (pose1.residue(poseIndex1).xyz(i).y - pose2.residue(poseIndex2).xyz(i).y) ** 2 + \
-                        (pose1.residue(poseIndex1).xyz(i).z - pose2.residue(poseIndex2).xyz(i).z) ** 2
-                count += 1
-            rmsd_total += sqrt(rmsd / count)
-            """
-        return rmsd_total
 
     def clean(self, inputs):
         if os.path.isdir(inputs.scratch):

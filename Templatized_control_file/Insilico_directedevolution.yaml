@@ -1,7 +1,6 @@
 PDB: Input_file.pdb # Input file
 
 ParameterFiles: # Put all the parameters of the ligands and cofactors here. Get the ligand and save it as mol2 file with Pymol then convert it with the parm.sh file.
-  - COF.fa.params
   - LIG.fa.params
 
 Name: Insilico_directedevolution_job # Name of the job, which will be used for the output folders
