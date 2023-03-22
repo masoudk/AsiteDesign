@@ -39,7 +39,7 @@ To get a better understanding, check the examples (both yaml files) in the Templ
 
 ## Citation
 
-If AsiteDesign is used in one of your publications, please cite the paper: {add reference to doi here}
+If AsiteDesign is used in one of your publications, please cite the paper: https://doi.org/10.1021/acs.jpcb.2c07091
 
 ## Contact
 
