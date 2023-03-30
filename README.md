@@ -6,8 +6,29 @@ AsiteDesign combines [PyRosetta](http://www.pyrosetta.org/) modules with enhance
 
 ## Installation
 
-A set of Python libraries are necessary to run the scripts of this Git repository; mainly OpenMM, PyRosetta, and Biotite.
-* python setup.py 
+A set of Python libraries are necessary to run the scripts of this Git repository; mainly OpenMM, PyRosetta, and Biotite. An easy way to install these dependencies is by using a yaml file with all the required packages to create a conda environment to use AsiteDesign. The PyRosetta credentials of the user must be added to the yaml file ("$USER" and "$PASS" must be changed). The command should be the following:
+
+```
+conda env create -f asitedesign.yaml 
+```
+
+Then, activate the conda environment:
+
+```
+conda activate asitedesign
+```
+
+Finally, you have to execute the Setup Python script to use the algorithm:
+
+```
+python Setup.py install
+```
+
+If the user wants to use the scripts for analysis and plotting (for instance, PlotSimulation.py), you must install the following dependencies in the created environment:
+
+```
+conda install matplotlib seaborn scikit-learn
+```
 
 ## Requirements
 

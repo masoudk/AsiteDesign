@@ -1,0 +1,14 @@
+name: asitedesign
+channels:
+  - conda-forge
+  - omnia
+  - https://$USER:$PASS@conda.graylab.jhu.edu
+dependencies:
+  - python=3.7
+  - biopython 
+  - cython
+  - mpi4py
+  - pyyaml
+  - pyrosetta=2020.20+release.c522e9e
+  - pip:
+    - biotite
