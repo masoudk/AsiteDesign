@@ -98,14 +98,14 @@ class ActiveSiteDesign(object):
         result = self.getState(metric=None)
 
         # write best results
-        self.writeResults(results=[result], nElements=1, iteration='', output=inputs.bestPosesPath,
+        self.writeResultsSerial(results=[result], nElements=1, iteration='', output=inputs.bestPosesPath,
                                                                                     energyType=inputs.rankingMetric)
 
         endTimeTotal = time.time()
         endDate = datetime.datetime.now()
 
         # write final summary
-        self.printFinalSummary(results=[result], nElements=1)
+        self.printFinalSummarySerial(results=[result], nElements=1)
 
         # Write the final timming
         self.printFinalTimming(startDate=startDate, endDate=endDate, timeTotal=endTimeTotal-startTimeTotal)
@@ -224,10 +224,11 @@ class ActiveSiteDesign(object):
                         self.comm.send(inputs.nIterations, dest=proccess, tag=proccess)
 
                 # Compile the iteration results
-                iterationResults = self.getIterationResults(results=currentResults, nElement=inputs.nPoses,
+                iterationResults, sequenceDiffList = self.getIterationResults(results=currentResults, nElement=inputs.nPoses,
                                                                                 metric=inputs.rankingMetric)
+                                                                                
 
-                self.printIterattionResults(results=iterationResults, iteration=iteration, time=end - start,
+                self.printIterattionResults(results=iterationResults, sequenceDiffList=sequenceDiffList, iteration=iteration, time=end - start,
                                             nIterations=inputs.nIterations, spawningMetric=inputs.spawningMetric,
                                             kT_high=kT_high, kT_low=kT_low)
 
@@ -239,7 +240,7 @@ class ActiveSiteDesign(object):
 
                 # Write PDB of the current iteration
                 if inputs.writeALL:
-                    self.writeResults(results=iterationResults, nElements=inputs.nPoses, iteration=iteration,
+                    self.writeResults(results=iterationResults, sequenceDiffList=sequenceDiffList, nElements=inputs.nPoses, iteration=iteration,
                                       prefix=inputs.name, output=inputs.outPath, energyType=inputs.rankingMetric)
 
                 masterNodeLagTime += (time.time() - end)
@@ -255,15 +256,15 @@ class ActiveSiteDesign(object):
                     bestResult = pickle.load(infile)
                     bestResults.extend(bestResult)
                     bestResults = self.sortResultsByMetric(results=bestResults, metric=inputs.rankingMetric)
-                    bestResults = self.selectResultsBySequenceDiff(results=bestResults, nElements=inputs.nPoses)
+                    bestResults, finalSequenceDiffList = self.selectResultsBySequenceDiff(results=bestResults, nElements=inputs.nPoses)
 
-            self.writeResults(results=bestResults, nElements=inputs.nPoses, iteration='', prefix=inputs.name,
+            self.writeResults(results=bestResults, sequenceDiffList=finalSequenceDiffList, nElements=inputs.nPoses, iteration='', prefix=inputs.name,
                                                         output=inputs.bestPosesPath, energyType=inputs.rankingMetric)
 
             # Write the final summary
             endTimeTotal = time.time()
             endDate = datetime.datetime.now()
-            self.printFinalSummary(results=bestResults, nElements=inputs.nPoses)
+            self.printFinalSummary(results=bestResults, sequenceDiffList=sequenceDiffList, nElements=inputs.nPoses, filename=inputs.name)
 
             # Write the final timing
             self.printFinalTimming(startDate=startDate, endDate=endDate, timeTotal=endTimeTotal-startTimeTotal)
@@ -276,9 +277,9 @@ class ActiveSiteDesign(object):
     def getIterationResults(self, results, nElement, metric=None):
 
         iterationResults = self.sortResultsByMetric(results=results, metric=metric)
-        iterationResults = self.selectResultsBySequenceDiff(results=results, nElements=nElement)
+        iterationResults, SequenceDiffList = self.selectResultsBySequenceDiff(results=results, nElements=nElement)
 
-        return iterationResults
+        return iterationResults, SequenceDiffList
 
     def getNIteration(self, iteration, nIterations, iterationTime, masterNodeLagTime, simulationTime):
             # Get the MAX nIteration from average iteration time and masterNodeLagTime
@@ -312,7 +313,7 @@ class ActiveSiteDesign(object):
         currentResults = self.sortResultsByMetric(results)
 
         # Select the newData from the correctResults based on sequenceDiff.
-        newData = self.selectResultsBySequenceDiff(results=currentResults, nElements=nElements)
+        newData, SequenceDiffList = self.selectResultsBySequenceDiff(results=currentResults, nElements=nElements)
 
         # Spawn the nPoses best correctResults
         replica = cycle(range(len(newData)))
@@ -464,31 +465,53 @@ class ActiveSiteDesign(object):
             if counter == nElements:
                 break
 
-        return newData
+        return newData, sequenceDiffList
 
-    def printIterattionResults(self, results, iteration, nIterations, time, spawningMetric, kT_high, kT_low):
+    def printIterattionResults(self, results, sequenceDiffList, iteration, nIterations, time, spawningMetric, kT_high, kT_low):
         iteration += 1
         print('------------------------------------------------------------------------------------------------')
         print('Iteration {}/{} done in {:.1f} s, SpawningMetric: {}, kT_high: {:8.1f}, kT_low: {:8.1f}.'.format(iteration, nIterations, time, spawningMetric,kT_high, kT_low))
 
-        print('                                                                                                                     -----Acceptance Ratios-----          ')
-        print('  Rank     Total Energy    Full Atom Energy       Constraints Energy       Ligand(s) Energy         SASA Energy     Total  ActiveSite   Ligand(s)  Sequence')
-        lineFormat = '#{:4d}       {:8.1f}         {:8.1f}              {:8.1f}                {:8.1f}                {:8.1f}     {:8.1f} {:8.1f}    {:8.1f}      {}'
+        print('Rank\tTotal Energy\tFull Atom Energy\tConstraints Energy\tLigand(s) Energy\tSASA Energy\tTotal Acceptance Ratio\tActiveSite Acceptance Ratio\tLigand(s) Acceptance Ratio\tSequence\tMutations')
+        lineFormat = '{:4d}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{}\t{}'
         for i, data in enumerate(results):
 
             print(lineFormat.format(i, data.scoreFullAtomWithConstraints, data.scoreFullAtom, data.scoreOnlyConstraints,
                                     data.scoreLigand, data.scoreSASA, data.acceptanceRatio,
-                                    data.activeSiteAcceptedRatio, data.ligandAcceptedRatio, data.sequence))
+                                    data.activeSiteAcceptedRatio, data.ligandAcceptedRatio, data.sequence, "/".join(sequenceDiffList[i])))
 
-    def printFinalSummary(self, results, nElements):
+    def printFinalSummary(self, results, sequenceDiffList, nElements, filename):
+        print('\n\n')
+        print('------------------------------------------------------------------------------------------------------')
+        print('                                           FINAL RESULTS                                              ')
+        print('------------------------------------------------------------------------------------------------------')
+        
+        output_csv = open("{}.csv".format(filename), "wt")
+
+        output_csv.write("Rank,Total Energy,Full Atom Energy,Constraints Energy,Ligand(s) Energy,SASA Energy,Total Acceptance Ratio,ActiveSite Acceptance Ratio,Ligand(s) Acceptance Ratio,Sequence,Mutations\n")
+        print('Rank\tTotal Energy\tFull Atom Energy\tConstraints Energy\tLigand(s) Energy\tSASA Energy\tTotal Acceptance Ratio\tActiveSite Acceptance Ratio\tLigand(s) Acceptance Ratio\tSequence\tMutations')
+        lineFormat = '{:4d}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{}\t{}'
+        writeFormat = '{},{:.1f},{:.1f},{:.1f},{:.1f},{:.1f},{:.1f},{:.1f},{:.1f},{},{}\n'
+        for i, data in enumerate(results):
+            if i == nElements:
+                break
+
+            output_csv.write(writeFormat.format(i, data.scoreFullAtomWithConstraints, data.scoreFullAtom, data.scoreOnlyConstraints,
+                                    data.scoreLigand, data.scoreSASA, data.acceptanceRatio,
+                                    data.activeSiteAcceptedRatio, data.ligandAcceptedRatio, data.sequence, "/".join(sequenceDiffList[i])))
+            print(lineFormat.format(i, data.scoreFullAtomWithConstraints, data.scoreFullAtom, data.scoreOnlyConstraints,
+                                    data.scoreLigand, data.scoreSASA, data.acceptanceRatio,
+                                    data.activeSiteAcceptedRatio, data.ligandAcceptedRatio, data.sequence, "/".join(sequenceDiffList[i])))
+        output_csv.close()
+    
+    def printFinalSummarySerial(self, results, nElements):
         print('\n\n')
         print('------------------------------------------------------------------------------------------------------')
         print('                                           FINAL RESULTS                                              ')
         print('------------------------------------------------------------------------------------------------------')
 
-        print('                                                                                                                     -----Acceptance Ratios-----          ')
-        print('  Rank     Total Energy    Full Atom Energy       Constraints Energy       Ligand(s) Energy         SASA Energy     Total  ActiveSite   Ligand(s)  Sequence')
-        lineFormat = '#{:4d}       {:8.1f}         {:8.1f}              {:8.1f}                {:8.1f}                {:8.1f}     {:8.1f} {:8.1f}    {:8.1f}      {}'
+        print('Rank\tTotal Energy\tFull Atom Energy\tConstraints Energy\tLigand(s) Energy\tSASA Energy\tTotal Acceptance Ratio\tActiveSite Acceptance Ratio\tLigand(s) Acceptance Ratio\tSequence\tMutations')
+        lineFormat = '{:4d}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{:8.1f}\t{}'
         for i, data in enumerate(results):
             if i == nElements:
                 break
@@ -505,7 +528,45 @@ class ActiveSiteDesign(object):
         print('------------------------------------------------------------------------------------------------------')
         print('\n\n\n\n')
 
-    def writeResults(self, results, nElements, iteration='', prefix='', output='', energyType='FullAtomWithConstraints'):
+    def writeResults(self, results, sequenceDiffList, nElements, iteration='', prefix='', output='', energyType='FullAtomWithConstraints'):
+        """
+        Writes the PDB file for each results
+        """
+        if iteration != '':
+            iteration = str((iteration+1))
+
+        for i, result in enumerate(results):
+            if energyType == 'FullAtomWithConstraints':
+                energy = result.scoreFullAtomWithConstraints
+
+            elif energyType == 'OnlyConstraints':
+                energy = result.scoreOnlyConstraints
+
+            elif energyType == 'SASA':
+                energy = result.scoreSASA
+
+            elif energyType == 'Ligand':
+                energy = result.scoreLigand
+
+            else:
+                energy = result.scoreFullAtom
+
+            dPose = result.dPose
+            pose = dPose.pose
+
+            if prefix:
+                name = '{}_I{}_N{}_{}_{:.1f}'.format(prefix, iteration, i, "_".join(sequenceDiffList[i]), energy)
+            else:
+                name = '{}_I{}_N{}_{}_{:.1f}'.format('pose', iteration, i, "_".join(sequenceDiffList[i]), energy)
+
+            pdbName = '{}.pdb'.format(name)
+            pose.dump_pdb(os.path.join(output, pdbName))
+
+            # Stop if the results have more elements that nElements
+            if i == nElements:
+                break
+               
+    def writeResultsSerial(self, results, nElements, iteration='', prefix='', output='', energyType='FullAtomWithConstraints'):
         """
         Writes the PDB file for each results
         """
